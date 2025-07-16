@@ -14,8 +14,8 @@ class Settings(BaseSettings):
     )
 
     # --- OpenAI Configuration ---
-    OPENAI_API_KEY: str = Field(
-        description="API key for OpenAI service authentication."
+    GEMINI_API_KEY: str = Field(
+        description="API key for Gemini service authentication."
     )
 
     # --- GitHub OAuth Configuration ---
@@ -26,7 +26,7 @@ class Settings(BaseSettings):
         description="GitHub installation access token fetched via OAuth flow or App auth."
     )
 
-    @field_validator("OPENAI_API_KEY", "GITHUB_CLIENT_ID", "GITHUB_CLIENT_SECRET")
+    @field_validator("GEMINI_API_KEY", "GITHUB_CLIENT_ID", "GITHUB_CLIENT_SECRET")
     @classmethod
     def check_not_empty(cls, value: str, info) -> str:
         """
