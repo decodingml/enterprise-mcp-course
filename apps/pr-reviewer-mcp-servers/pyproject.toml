@@ -1,0 +1,13 @@
+[project]
+name = "asana-mcp-server"
+version = "0.1.0"
+dependencies = [
+  "python-dotenv",
+  "pydantic",
+  "fastmcp",
+  "mcp",
+  "loguru",
+  "pytest-asyncio",
+  "pytest",
+  "requests"
+  ]

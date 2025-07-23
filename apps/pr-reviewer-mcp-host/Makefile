@@ -12,12 +12,8 @@ run:
 
 # Start the webhook server (FastAPI + GitHub integration)
 webhook:
-	cd pr-reviewer-mcp-clients && uvicorn src.webhook:app --reload
-
-# Drop into shell with correct working dir
-dev-shell:
-	cd pr-reviewer-mcp-clients && uv venv && uv pip install -r pyproject.toml && zsh
+	PYTHONPATH=src uv run uvicorn api.webhook:app --host 0.0.0.0 --port 8000
 
 # Run the GitHub OAuth registration CLI to obtain access token
 register:
-	uv run python src/oauth_cli.py
+	PYTHONPATH=src uv run python src/utils/oauth_cli.py
