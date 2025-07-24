@@ -17,8 +17,9 @@ async def test_list_prompts(client):
 
 async def test_get_prompt(client):
     logger.info(f"Testing get_prompt with name: {PROMPT_NAME}")
-    result = await client.get_prompt(PROMPT_NAME)
+    result = await client.get_prompt(PROMPT_NAME, { "arguments" : {"pr_id": "id1","pr_url": "url1" }})
     prompt_messages = result.messages
+    print(prompt_messages)
     assert isinstance(prompt_messages, list), f"Prompt messages for prompt {PROMPT_NAME} should be a list"
     assert prompt_messages, f"No prompt messages found for prompt {PROMPT_NAME}"
 

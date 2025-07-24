@@ -5,6 +5,7 @@ from fastmcp import FastMCP
 
 from asana_server import asana_mcp
 from slack_server import slack_mcp
+from github_server import github_mcp
 from agent_scope_server import agent_scope_mcp
 
 log = logging.getLogger(__name__)
@@ -24,6 +25,7 @@ class McpServersRegistry:
         await self.registry.import_server(asana_mcp, prefix="asana")
         await self.registry.import_server(agent_scope_mcp, prefix="scope")
         await self.registry.import_server(slack_mcp, prefix="slack")
+        await self.registry.import_server(github_mcp, prefix="github")
 
         all_tools = await self.registry.get_tools()
         for tool in all_tools.values():

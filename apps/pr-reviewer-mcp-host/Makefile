@@ -12,8 +12,7 @@ run:
 
 # Start the webhook server (FastAPI + GitHub integration)
 webhook:
-	PYTHONPATH=src uv run uvicorn api.webhook:app --host 0.0.0.0 --port 8000
+	PYTHONPATH=src uv run uvicorn api.webhook:app --host 0.0.0.0 --port 5001
 
-# Run the GitHub OAuth registration CLI to obtain access token
-register:
-	PYTHONPATH=src uv run python src/utils/oauth_cli.py
+typecheck:
+	mypy --strict src

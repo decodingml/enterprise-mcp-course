@@ -3,7 +3,7 @@ from host.host import MCPHost
 
 async def main():
     client = MCPHost()
-    await client.connect_to_server("github")
+    await client.initialize()
     response = await client.process_query("Summarize this PR: https://github.com/915-Muscalagiu-AncaIoana/Mock-App/pull/1")
     print(f"\n📝 Response:\n{response}")
     await client.cleanup()

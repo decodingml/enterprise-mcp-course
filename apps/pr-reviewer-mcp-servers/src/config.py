@@ -26,8 +26,18 @@ class Settings(BaseSettings):
     SLACK_CLIENT_ID: str = Field(description="Slack OAuth App Client ID")
     SLACK_CLIENT_SECRET: str = Field(description="Slack OAuth App Client Secret")
     SLACK_BOT_TOKEN: str = Field(description="Slack Bot OAuth Token", default="")
+
+    # --- GitHub OAuth Configuration ---
+    GITHUB_CLIENT_ID: str = Field(description="GitHub OAuth App Client ID")
+    GITHUB_CLIENT_SECRET: str = Field(description="GitHub OAuth App Client Secret")
+    GITHUB_ACCESS_TOKEN: str = Field(
+        default="",
+        description="GitHub installation access token fetched via OAuth flow or App auth."
+    )
+
+    REGISTRY_PORT: int = Field(default=8000, description="Port for the tool registry server")
     
-    @field_validator("ASANA_TOKEN", "ASANA_PROJECT_GID", "SLACK_CLIENT_ID", "SLACK_CLIENT_SECRET")
+    @field_validator("ASANA_TOKEN", "ASANA_PROJECT_GID", "SLACK_CLIENT_ID", "SLACK_CLIENT_SECRET", "GITHUB_CLIENT_ID", "GITHUB_CLIENT_SECRET")
     @classmethod
     def check_not_empty(cls, value: str, info) -> str:
         """

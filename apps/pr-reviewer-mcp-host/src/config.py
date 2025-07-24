@@ -2,6 +2,7 @@ from loguru import logger
 from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+
 class Settings(BaseSettings):
     """
     Configuration class that loads and validates environment variables for the application.
@@ -13,20 +14,14 @@ class Settings(BaseSettings):
         env_file_encoding="utf-8"
     )
 
-    # --- OpenAI Configuration ---
+    # --- OpenAI/Gemini Configuration ---
     GEMINI_API_KEY: str = Field(
         description="API key for Gemini service authentication."
     )
 
-    # --- GitHub OAuth Configuration ---
-    GITHUB_CLIENT_ID: str = Field(description="GitHub OAuth App Client ID")
-    GITHUB_CLIENT_SECRET: str = Field(description="GitHub OAuth App Client Secret")
-    GITHUB_ACCESS_TOKEN: str = Field(
-        default="",
-        description="GitHub installation access token fetched via OAuth flow or App auth."
-    )
+    SLACK_CHANNEL_ID : str = Field(description="Reviews channel ID for Slack integration")
 
-    @field_validator("GEMINI_API_KEY", "GITHUB_CLIENT_ID", "GITHUB_CLIENT_SECRET")
+    @field_validator("GEMINI_API_KEY", "SLACK_CHANNEL_ID")
     @classmethod
     def check_not_empty(cls, value: str, info) -> str:
         """

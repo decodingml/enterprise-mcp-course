@@ -12,6 +12,7 @@ dependencies = [
   "loguru",
   "requests",
   "aiohttp",
-  "google-genai"
+  "google-genai",
+  "mypy"
 ]
 
