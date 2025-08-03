@@ -25,9 +25,7 @@
 
 ## 🚀 Project Overview
 
-This project is part of the **MCP Enterprise Series**, where we teach you how to use the **Model Context Protocol (MCP)** at a **production level**.  
-
-The series focuses on best practices for building scalable automation systems that combine tools, resources, and prompt templates—powering intelligent workflows across your enterprise.
+This project is part of the **MCP Enterprise Series**, where we teach you how to use the **Model Context Protocol (MCP)** at a **production level**. The series focuses on best practices for building scalable automation systems that combine tools, resources, and prompt templates—powering intelligent workflows across your enterprise.
 
 This folder contains the **MCP Servers**: independent, modular services that expose enterprise resources, tool APIs, and prompt libraries.  
 
@@ -47,6 +45,7 @@ All these tools and resources are **aggregated into the Tool Registry**, a centr
 # Table of Contents
 
 - [📋 Prerequisites](#-prerequisites)
+- [☁️ Cloud Services](#-cloud-services)
 - [🎯 Getting Started](#-getting-started)
 - [📁 Project Structure](#-project-structure)
 - [⚡️ Running the Servers](#-running-the-servers)
@@ -74,6 +73,8 @@ Some servers require access to external APIs. Authentication is managed via envi
 | Slack API | Messaging, channel info | `SLACK_BOT_TOKEN` |
 | Asana API | Task management | `ASANA_ACCESS_TOKEN` |
 
+Instructions and links for obtaining these API tokens are provided in the sections below, see the **Getting Started** steps for detailed tutorials and resources.
+
 # 🎯 Getting Started
 
 1. **Clone the repo**
@@ -84,12 +85,20 @@ Some servers require access to external APIs. Authentication is managed via envi
 
 2. **Set up your environment variables**  
 
-Before you can use the APIs, you must register your own app with each service to obtain the required credentials (Client ID, Client Secret and API Tokens). Follow these steps:
+Before you can use the APIs, you must register your own app with each service to obtain the required credentials (Client ID, Client Secret and API Tokens). 
+
+> **Note:** OAuth 2.0 is typically designed for apps where each user authenticates individually. In this enterprise setup, you only need to register the MCP server as a single client—registration is a one-time step for your organization. For the application callback URL, you do not need to provide a real endpoint when running locally (unless you want to expose a secure endpoint).
+
+Follow these steps:
 
 **a. Register your app in Slack & Github:**
 
 - **Slack:** [Create a Slack App & Get Credentials](https://api.slack.com/authentication/oauth-v2)
 - **GitHub:** [Register a GitHub OAuth App](https://docs.github.com/en/developers/apps/building-oauth-apps/creating-an-oauth-app)
+
+> **Token Tip:** When authorizing your GitHub app or Slack app, you can simply copy the code directly from the URL after the browser redirects you (as highlighted in the image above) and paste it into the CLI, as requested. This makes it easy to obtain the GitHub/Slack bot token for your MCP server without deploying a public callback endpoint during development.
+
+  ![GitHub code example](/static/github-code.png)
 
 After registering, you will receive a **Client ID** and **Client Secret** for each service.
 
