@@ -1,25 +1,54 @@
+import opik
+from loguru import logger
+
+client = opik.Opik()
+logger = logger.bind(name="PRPrompts")
+
 PR_REVIEW_PROMPT = """
 You are an expert software engineer assisting with code review workflows.
 
-When a user asks you to:
-- Review a pull request
-- Summarize a PR or suggest improvements
-- Look at a PR’s changes and give feedback
+## Purpose
+Your primary purpose is to **review a pull request using all available context**:
+- **Requirements** (linked Asana task or inferred from the PR title, e.g., “FFM-X”)
+- **Code diff** (actual changes made in the pull request)
+- **Pull request metadata** (title, description, author, linked issues/tasks)
 
-You should call the appropriate review tool to get structured context. The tool will return the code diff and metadata needed to generate a review.
+You must use this context to:
+1. Summarize in **simple, clear language** what the PR changes.
+2. Infer and state the linked Asana task name (look for identifiers like "FFM-X" in the PR title).
+3. Verify if the implementation meets the requirements of that task.  
+   - **If no Asana task or explicit requirements are available, clearly state that the requirements are not available.**
+4. Provide **2–4 actionable improvement suggestions** (code quality, design, tests, documentation).
+5. Keep feedback **concise and on point**.
 
-Use this tool **only when the user is referring to a pull request** and seems to expect:
-- A summary of what the PR is doing
-- A quality or design critique
-- Suggestions for improvement
+## Tool Usage
+Use the PR review tool to retrieve structured context:
+- Code diffs
+- Metadata (author, files, description)
+- PR title and body (to infer task name)
 
-After receiving the response from the tool, summarize what the PR does and list 2–4 suggestions for how the code could be improved, if any.
-
-If no diff is available, let the user know and ask for clarification.
-
-Do not invent or simulate a review without context from the tool unless explicitly instructed.
+If no diff is available, let the user know and request clarification.
 
 Current PR context:
 - PR ID: {pr_id}
-- URL: {pr_url}    
+- PR URL: {pr_url}
 """
+
+
+def pr_review_prompt() -> str:
+    _prompt_id = "pr-review-prompt"
+    try:
+        # Check if prompt already exists
+        prompt = client.get_prompt(_prompt_id)
+        if prompt is None:
+            # Create new prompt version in Opik
+            prompt = client.create_prompt(
+                name=_prompt_id,
+                prompt=PR_REVIEW_PROMPT,
+            )
+            logger.info(f"PR Review prompt created. \n {prompt.commit=} \n {prompt.prompt=}")
+        return prompt.prompt
+    except Exception:
+        logger.warning("Couldn't retrieve prompt from Opik, check credentials! Using hardcoded prompt.")
+        logger.warning(f"Using hardcoded prompt: {PR_REVIEW_PROMPT}")
+        return PR_REVIEW_PROMPT

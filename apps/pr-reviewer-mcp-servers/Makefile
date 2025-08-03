@@ -42,5 +42,5 @@ register-slack:
 register-github:
 	PYTHONPATH=src uv run python src/utils/oauth_github.py
 
-register:
-	PYTHONPATH=src uv run python src/utils/oauth_cli.py
+typecheck:
+	mypy --strict src

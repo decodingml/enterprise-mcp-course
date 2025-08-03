@@ -4,6 +4,7 @@ from host.host import MCPHost
 from config import settings
 import logging
 import json
+import uvicorn
 
 SYSTEM_PROMPT_NAME = "scope_pr_review_prompt"
 
@@ -39,10 +40,10 @@ async def handle_github_webhook(request: Request):
             
             review = await client.process_query(system_prompt.messages[0].content.text)
             logger.info(f"Review generated: {review}")
-            logger.info(f"Posting review to Slack channel {settings.SLACK_CHANNEL_ID}...")
-            
-            await client.call_tool("slack_post_message", {"channel_name": settings.SLACK_CHANNEL_ID, "message": review})
-            logger.info("Review posted to Slack.")
+            if review:
+                logger.info(f"Posting review to Slack channel {settings.SLACK_CHANNEL_ID}...")
+                await client.call_tool("slack_post_message", {"channel_name": settings.SLACK_CHANNEL_ID, "message": review})
+                logger.info("Review posted to Slack.")
         else:
             logger.info(f"Webhook action '{payload.get('action')}' is not handled.")
         return {"status": "ok"}
@@ -50,3 +51,6 @@ async def handle_github_webhook(request: Request):
         logger.error(f"Error handling webhook: {e}")
         return {"status": "error", "detail": str(e)}
 
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=5001)

@@ -21,7 +21,9 @@ class Settings(BaseSettings):
 
     SLACK_CHANNEL_ID : str = Field(description="Reviews channel ID for Slack integration")
 
-    @field_validator("GEMINI_API_KEY", "SLACK_CHANNEL_ID")
+    TOOL_REGISTRY_URL: str = Field(description="URL of the tool registry global MCP server")
+
+    @field_validator("GEMINI_API_KEY", "SLACK_CHANNEL_ID", "TOOL_REGISTRY_URL")
     @classmethod
     def check_not_empty(cls, value: str, info) -> str:
         """

@@ -1,13 +1,15 @@
-import json
-from contextlib import AsyncExitStack
-from typing import Optional, Any
-from config import settings
+import logging
+from typing import Any
+
 from google import genai
 from google.genai import types
 from google.genai.types import Tool
+
+from config import settings
 from host.connection_manager import ConnectionManager
 
-
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger("mcp_host")  
 SKIPPABLE_PROPS = ["additional_properties", "additionalProperties", "$schema"]
 
 def strip_additional_properties(schema: dict) -> dict[Any, dict] | list[dict] | dict | list:
@@ -56,33 +58,34 @@ class MCPHost:
             contents=contents,
             config=config,
         )
-        # Check for function call
-        if response.candidates[0].content.parts[0].function_call:
-            function_call = response.candidates[0].content.parts[0].function_call
 
-            result = await self.connection_manager.call_tool(
-                function_call.name, dict(function_call.args)
-            )
+        contents.append(response.candidates[0].content)  # Append the content from the model's response.
+        
+        for part in response.candidates[0].content.parts:
+            if part.function_call:
+                function_call = part.function_call
 
-            function_response_part = types.Part.from_function_response(
-                name=function_call.name,
-                response={"result": result},
-            )
+                result = await self.connection_manager.call_tool(
+                    function_call.name, dict(function_call.args)
+                )
 
-            # Append function call and result of the function execution to contents
-            contents.append(response.candidates[0].content)  # Append the content from the model's response.
-            contents.append(types.Content(role="user", parts=[function_response_part]))  # Append the function response
+                function_response_part = types.Part.from_function_response(
+                    name=function_call.name,
+                    response={"result": result},
+                )
 
-            final_response = self.client.models.generate_content(
-                model=self.model,
-                config=config,
-                contents=contents,
-            )
+                # Append function call and result of the function execution to contents
+                logger.info(f"Function call '{function_call.name}' executed with result: {result}")
+                contents.append(types.Content(role="user", parts=[function_response_part]))  # Append the function response
+    
+        final_response = self.client.models.generate_content(
+            model=self.model,
+            config=config,
+            contents=contents,
+        )
 
-            return final_response.text
-        else:
-            print("No tool call required by Gemini")
-            return response.text
+        return final_response.text
+        
 
     async def get_mcp_tools(self) -> list[Tool]:
         tools = await self.connection_manager.get_mcp_tools()

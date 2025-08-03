@@ -9,5 +9,6 @@ dependencies = [
   "loguru",
   "pytest-asyncio",
   "pytest",
-  "requests"
+  "requests",
+  "opik"
   ]
