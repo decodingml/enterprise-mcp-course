@@ -2,7 +2,9 @@
 import opik
 from clients.asana_client import AsanaClient
 from fastmcp import FastMCP
+import utils.opik_utils as opik_utils
 
+opik_utils.configure()
 # Instantiate MCP for Asana tools
 asana_mcp = FastMCP("asana_tools")
 asana_client = AsanaClient()

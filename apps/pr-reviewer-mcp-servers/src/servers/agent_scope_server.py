@@ -1,8 +1,9 @@
 import opik
 from fastmcp import FastMCP
-from servers.prompts import get_pr_review_prompt
+from servers.prompts import PR_REVIEW_PROMPT
+import utils.opik_utils as opik_utils
 
-# Instantiate MCP for Prompts
+opik_utils.configure()
 agent_scope_mcp = FastMCP("agent_scope_prompts")
 
 
@@ -16,7 +17,7 @@ def pr_review_prompt(arguments: dict):
     Format the PR_REVIEW_PROMPT using the provided arguments dict.
     All keys in arguments will be passed as keyword arguments to format().
     """
-    return get_pr_review_prompt().format(**arguments)
+    return PR_REVIEW_PROMPT.get().format(**arguments)
 
 
 # agent_scope_mcp.run(transport="streamable-http", host="localhost", port=8002)

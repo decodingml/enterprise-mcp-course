@@ -1,54 +1,68 @@
 import opik
 from loguru import logger
 
-client = opik.Opik()
-logger = logger.bind(name="PRPrompts")
+class VersionedPrompt:
+    def __init__(self, name: str, template: str):
+        self.name = name
+        self._opik_prompt = None
+        self._template = template
+        self._init_opik_prompt()
 
-PR_REVIEW_PROMPT = """
+    def _init_opik_prompt(self):
+        try:
+            self._opik_prompt = opik.Prompt(name=self.name, prompt=self._template)
+        except Exception as e:
+            logger.warning(
+                f"Opik prompt versioning unavailable for '{self.name}': {e}. Using local template."
+            )
+            self._opik_prompt = None
+
+    def get(self) -> str:
+        if self._opik_prompt is not None:
+            return self._opik_prompt.prompt
+        return self._template
+
+    def __str__(self):
+        return self.get()
+
+    def __repr__(self):
+        return f"<VersionedPrompt name={self.name}>"
+
+
+_PR_REVIEW_PROMPT = """
 You are an expert software engineer assisting with code review workflows.
 
-## Purpose
-Your primary purpose is to **review a pull request using all available context**:
-- **Requirements** (linked Asana task or inferred from the PR title, e.g., “FFM-X”)
-- **Code diff** (actual changes made in the pull request)
-- **Pull request metadata** (title, description, author, linked issues/tasks)
+## Goal
+Review the given pull request using **all available context**:
+- **Requirements**: either linked directly in the PR or inferred from its title (identifiers like "FFM-X")
+- **Code diff**: changes made in the pull request
+- **PR metadata**: title, description, author, linked issues/tasks
 
-You must use this context to:
-1. Summarize in **simple, clear language** what the PR changes.
-2. Infer and state the linked Asana task name (look for identifiers like "FFM-X" in the PR title).
-3. Verify if the implementation meets the requirements of that task.  
-   - **If no Asana task or explicit requirements are available, clearly state that the requirements are not available.**
-4. Provide **2–4 actionable improvement suggestions** (code quality, design, tests, documentation).
-5. Keep feedback **concise and on point**.
+## Required Steps
+1. **Summarize** in clear, concise language what the pull request changes.  
+2. **Extract the Asana task name** associated with this PR:
+   - Look for an identifier following the pattern: `<PROJECT_KEY>-<NUMBER>` (e.g., `FFM-2`, `FFM-123`).  
+   - **Return only the identifier itself (e.g., `FFM-2`) and nothing else** (do not include title text or other content).  
+   - If there are multiple matches, choose the one most relevant to the PR title or description.  
+   - If no match is found, explicitly state `"No task name found"`.  
+3. **Retrieve full task details** based on the extracted task name to verify implementation.  
+4. **Verify implementation**: check whether the changes meet the requirements for the identified Asana task.  
+   - If no requirements or task name can be identified, explicitly state: `"No task name or explicit requirements available."`
+5. **Provide 2–4 actionable improvement suggestions** (code quality, design, tests, documentation).  
+6. Keep all feedback **concise and focused**.
 
-## Tool Usage
-Use the PR review tool to retrieve structured context:
-- Code diffs
-- Metadata (author, files, description)
-- PR title and body (to infer task name)
-
-If no diff is available, let the user know and request clarification.
+## Response Format
+Always include:
+- **Pull request url** (link to the pull request)
+- **Summary** (what the PR changes)
+- **Asana task id** (just the identifier, e.g., `FFM-2`, or `"No task name found"`)
+- **Asana task details** (summary of the description, retrieved from Asana, if exists)
+- **Requirement check result**
+- **Improvement suggestions**
 
 Current PR context:
 - PR ID: {pr_id}
 - PR URL: {pr_url}
 """
 
-
-def get_pr_review_prompt() -> str:
-    _prompt_id = "pr-review-prompt"
-    try:
-        # Check if prompt already exists
-        prompt = client.get_prompt(_prompt_id)
-        if prompt is None:
-            # Create new prompt version in Opik
-            prompt = client.create_prompt(
-                name=_prompt_id,
-                prompt=PR_REVIEW_PROMPT,
-            )
-            logger.info(f"PR Review prompt created. \n {prompt.commit=} \n {prompt.prompt=}")
-        return prompt.prompt
-    except Exception:
-        logger.warning("Couldn't retrieve prompt from Opik, check credentials! Using hardcoded prompt.")
-        logger.warning(f"Using hardcoded prompt: {PR_REVIEW_PROMPT}")
-        return PR_REVIEW_PROMPT
+PR_REVIEW_PROMPT = VersionedPrompt("pr-review-prompt", _PR_REVIEW_PROMPT)

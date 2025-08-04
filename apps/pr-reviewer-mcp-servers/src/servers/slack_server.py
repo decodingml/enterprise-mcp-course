@@ -1,7 +1,9 @@
 import opik
 from clients.slack_client import SlackClient
 from fastmcp import FastMCP
+import utils.opik_utils as opik_utils
 
+opik_utils.configure()
 slack_mcp = FastMCP("slack_tools")
 slack_client = SlackClient()
 

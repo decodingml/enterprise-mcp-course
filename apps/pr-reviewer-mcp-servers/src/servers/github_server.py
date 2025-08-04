@@ -5,7 +5,9 @@ from mcp.client.streamable_http import streamablehttp_client
 from mcp import ClientSession
 from config import settings
 from contextlib import AsyncExitStack
+import utils.opik_utils as opik_utils
 
+opik_utils.configure()
 logger = logging.getLogger("github_server")
 logging.basicConfig(level=logging.INFO)
 
