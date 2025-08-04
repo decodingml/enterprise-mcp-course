@@ -1,4 +1,3 @@
-
 from clients.slack_client import SlackClient
 from fastmcp import FastMCP
 
@@ -25,6 +24,5 @@ async def post_message(channel_name: str, message: str = ""):
     """Posts a new message to a channel."""
     result = await slack_client.send_message(channel_name, message)
     return {"status": "created" if result.get("ok") else "error", "message": result}
-
 
 #slack_mcp.run(transport= "streamable-http", host="localhost", port=8003)

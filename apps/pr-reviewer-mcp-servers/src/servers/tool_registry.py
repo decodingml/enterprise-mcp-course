@@ -1,12 +1,14 @@
 import logging
 from typing import Set
+import logging
+from typing import Set
 
 from fastmcp import FastMCP
 
-from asana_server import asana_mcp
-from slack_server import slack_mcp
-from github_server import github_mcp
-from agent_scope_server import agent_scope_mcp
+from servers.asana_server import asana_mcp
+from servers.slack_server import slack_mcp
+from servers.github_server import github_mcp
+from servers.agent_scope_server import agent_scope_mcp
 
 log = logging.getLogger(__name__)
 
@@ -42,6 +44,4 @@ class McpServersRegistry:
     def get_all_tags(self) -> Set[str]:
         """returns the pre-calculated set of all tool tags."""
         return self.all_tags
-
-
 

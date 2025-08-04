@@ -1,3 +1,6 @@
+
+import opik
+from opik import opik_context
 from config import settings
 from contextlib import AsyncExitStack
 from typing import Optional
@@ -11,16 +14,19 @@ AVAILABLE_SERVERS = {
 }
 
 
+
 class ConnectionManager:
     def __init__(self):
         self.session: Optional[ClientSession] = None
         self.exit_stack = AsyncExitStack()
         self.is_initialized = False
 
+    @opik.track(name="connection-initialize", type="general")
     async def initialize_all(self):
         await self.connect_to_server('tool-registry')
         self.is_initialized = True
 
+    @opik.track(name="connect-to-server", type="general")
     async def connect_to_server(self, server_key: str):
         config = AVAILABLE_SERVERS[server_key]
 
@@ -69,16 +75,20 @@ class ConnectionManager:
             if session_id:
                 print(f"Session ID: {session_id}")
     
+    @opik.track(name="get-mcp-tools", type="tools")
     async def get_mcp_tools(self):
         return await self.session.list_tools()
-    
+
+    @opik.track(name="call-tool", type="tool")
     async def call_tool(self, function_name, function_args):
         return await self.session.call_tool(
                 function_name, arguments=dict(function_args)
             )
 
+    @opik.track(name="get-prompt", type="prompt")
     async def get_prompt(self, name, args):
         return await self.session.get_prompt(name, args)
-    
+
+    @opik.track(name="cleanup", type="general")
     async def cleanup_all(self):
         await self.exit_stack.aclose()

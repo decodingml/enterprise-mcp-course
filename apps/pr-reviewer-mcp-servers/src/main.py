@@ -1,6 +1,6 @@
 
 import anyio
-from tool_registry import McpServersRegistry
+from servers.tool_registry import McpServersRegistry
 from config import settings
 
 def main():

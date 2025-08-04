@@ -5,21 +5,27 @@ from config import settings
 import logging
 import json
 import uvicorn
+import utils.opik_utils as opik_utils
 
 SYSTEM_PROMPT_NAME = "scope_pr_review_prompt"
 
-app = FastAPI()
+
+from contextlib import asynccontextmanager
+
 client = MCPHost()
 logger = logging.getLogger("webhook")
 logging.basicConfig(level=logging.INFO)
+opik_utils.configure()
 
-@app.on_event("startup")
-async def startup_event():
-    await client.initialize()  
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    await client.initialize()
+    try:
+        yield
+    finally:
+        await client.cleanup()
 
-@app.on_event("shutdown")
-async def shutdown_event():
-    await client.cleanup()
+app = FastAPI(lifespan=lifespan)
         
 
 @app.post("/webhook")

@@ -1,5 +1,5 @@
 from fastmcp import FastMCP
-from prompts import PR_REVIEW_PROMPT
+from servers.prompts import PR_REVIEW_PROMPT
 
 # Instantiate MCP for Prompts
 agent_scope_mcp = FastMCP("agent_scope_prompts")
