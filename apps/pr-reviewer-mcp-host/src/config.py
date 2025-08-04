@@ -25,7 +25,7 @@ class Settings(BaseSettings):
 
     # --- Opik/Comet Configuration ---
     OPIK_API_KEY: str = Field(default="", description="API key for Opik/Comet integration.")
-    OPIK_PROJECT: str = Field(default="pr_reviewer_course",
+    OPIK_PROJECT: str = Field(default="pr_reviewer_host",
         description="Project name for Comet ML and Opik tracking.",)
 
     @field_validator("GEMINI_API_KEY", "SLACK_CHANNEL_ID", "TOOL_REGISTRY_URL")

@@ -75,7 +75,7 @@ class ConnectionManager:
             if session_id:
                 print(f"Session ID: {session_id}")
     
-    @opik.track(name="get-mcp-tools", type="tools")
+    @opik.track(name="get-mcp-tools", type="general")
     async def get_mcp_tools(self):
         return await self.session.list_tools()
 
@@ -85,7 +85,7 @@ class ConnectionManager:
                 function_name, arguments=dict(function_args)
             )
 
-    @opik.track(name="get-prompt", type="prompt")
+    @opik.track(name="get-prompt", type="general")
     async def get_prompt(self, name, args):
         return await self.session.get_prompt(name, args)
 

@@ -1,7 +1,7 @@
 
+import opik
 from clients.asana_client import AsanaClient
 from fastmcp import FastMCP
-import asyncio
 
 # Instantiate MCP for Asana tools
 asana_mcp = FastMCP("asana_tools")
@@ -13,6 +13,7 @@ asana_client = AsanaClient()
     tags={"asana", "task", "search"},
     annotations={"title": "Find Task", "readOnlyHint": False, "openWorldHint": True},
 )
+@opik.track(name="asana-find-task", type="tool")
 async def find_task(task_name: str):
     """Find an Asana task by name."""
     task = await asana_client.find_task(task_name)
@@ -27,6 +28,7 @@ async def find_task(task_name: str):
     tags={"asana", "task", "create"},
     annotations={"title": "Create Task", "readOnlyHint": False, "openWorldHint": True},
 )
+@opik.track(name="asana-create-task", type="tool")
 async def create_task(task_name: str, description: str = ""):
     """Create a new Asana task."""
     task = await asana_client.create_task(task_name, description)

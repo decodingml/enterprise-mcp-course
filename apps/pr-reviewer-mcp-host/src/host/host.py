@@ -15,6 +15,7 @@ from host.connection_manager import ConnectionManager
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("mcp_host")
 SKIPPABLE_PROPS = ["additional_properties", "additionalProperties", "$schema"]
+MAX_LLM_CALLS = 5
 
 def strip_additional_properties(schema: dict) -> dict[Any, dict] | list[dict] | dict | list:
     if isinstance(schema, dict):
@@ -43,7 +44,7 @@ class MCPHost:
         opik_context.update_current_trace(thread_id=self.thread_id)
         await self.connection_manager.initialize_all()
 
-    @opik.track(name="get-system-prompt", type="prompt")
+    @opik.track(name="get-system-prompt", type="general")
     async def get_system_prompt(self, name, args) -> str:
         if not self.connection_manager.is_initialized:
             raise RuntimeError("ConnectionManager is not initialized. Call initialize_all() first.")
@@ -64,34 +65,50 @@ class MCPHost:
                 role="user", parts=[types.Part(text=query)]
             )
         ]
-        response = self.client.models.generate_content(
-            model=self.model,
-            contents=contents,
-            config=config,
-        )
-
-        contents.append(response.candidates[0].content)
-        for part in response.candidates[0].content.parts:
-            if part.function_call:
-                function_call = part.function_call
-                result = await self.connection_manager.call_tool(
-                    function_call.name, dict(function_call.args)
+       
+        llm_calls = 0
+        while llm_calls < MAX_LLM_CALLS:
+            try:
+                response = self.client.models.generate_content(
+                    model=self.model,
+                    contents=contents,
+                    config=config,
                 )
-                function_response_part = types.Part.from_function_response(
-                    name=function_call.name,
-                    response={"result": result},
-                )
-                logger.info(f"Function call '{function_call.name}' executed with result: {result}")
-                contents.append(types.Content(role="user", parts=[function_response_part]))
+            except Exception as e:
+                logger.error(f"Error during LLM call #{llm_calls+1}: {e}")
+                return f"[Error during LLM call: {e}]"
+            llm_calls += 1
+            contents.append(response.candidates[0].content)
+            function_call_found = False
 
-        final_response = self.client.models.generate_content(
-            model=self.model,
-            config=config,
-            contents=contents,
-        )
-        return final_response.text
+            for part in response.candidates[0].content.parts:
+                if getattr(part, "function_call", None):
+                    function_call_found = True
+                    function_call = part.function_call
+                    try:
+                        result = await self.connection_manager.call_tool(
+                            function_call.name, dict(function_call.args)
+                        )
+                    except Exception as e:
+                        logger.error(f"Error during tool call '{function_call.name}': {e}")
+                        result = f"[Error during tool call: {e}]"
+                    function_response_part = types.Part.from_function_response(
+                        name=function_call.name,
+                        response={"result": result},
+                    )
+                    contents.append(types.Content(role="user", parts=[function_response_part]))
 
-    @opik.track(name="get-mcp-tools", type="tools")
+            if not function_call_found:
+                parts = response.candidates[0].content.parts
+                text_result = "".join([p.text for p in parts if hasattr(p, 'text') and p.text])
+                logger.info(f"Final response after {llm_calls} LLM calls: {text_result}")
+                return text_result 
+
+        logger.error("Maximum LLM call limit reached without a final answer.")
+        return None
+
+
+    @opik.track(name="get-mcp-tools", type="general")
     async def get_mcp_tools(self) -> list[Tool]:
         tools = await self.connection_manager.get_mcp_tools()
         return [

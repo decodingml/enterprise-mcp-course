@@ -1,5 +1,5 @@
-import logging
-from typing import Set
+
+import opik
 import logging
 from typing import Set
 
@@ -19,6 +19,7 @@ class McpServersRegistry:
         self.all_tags: Set[str] = set()
         self._is_initialized = False
 
+    @opik.track(name="tool-registry-initialize", type="general")
     async def initialize(self):
         if self._is_initialized:
             return

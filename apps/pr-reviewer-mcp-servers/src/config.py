@@ -36,6 +36,11 @@ class Settings(BaseSettings):
     )
 
     REGISTRY_PORT: int = Field(default=8000, description="Port for the tool registry server")
+
+    # --- Opik/Comet Configuration ---
+    OPIK_API_KEY: str = Field(default="", description="API key for Opik/Comet integration.")
+    OPIK_PROJECT: str = Field(default="pr_reviewer_servers",
+        description="Project name for Comet ML and Opik tracking.",)
     
     @field_validator("ASANA_TOKEN", "ASANA_PROJECT_GID", "SLACK_CLIENT_ID", "SLACK_CLIENT_SECRET", "GITHUB_CLIENT_ID", "GITHUB_CLIENT_SECRET")
     @classmethod

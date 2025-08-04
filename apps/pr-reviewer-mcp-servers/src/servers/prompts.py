@@ -35,7 +35,7 @@ Current PR context:
 """
 
 
-def pr_review_prompt() -> str:
+def get_pr_review_prompt() -> str:
     _prompt_id = "pr-review-prompt"
     try:
         # Check if prompt already exists

@@ -2,6 +2,7 @@
 import anyio
 from servers.tool_registry import McpServersRegistry
 from config import settings
+import utils.opik_utils as opik_utils
 
 def main():
     mcp_tool_manager = McpServersRegistry()
@@ -12,4 +13,5 @@ def main():
     )
 
 if __name__ == "__main__":
+    opik_utils.configure()
     main()
