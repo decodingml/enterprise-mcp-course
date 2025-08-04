@@ -52,7 +52,8 @@ Here, we focus on the **custom MCP Host**, an Agentic AI App that:
 - [Project Structure](#project-structure)
 - [⚡️ Running the Host](#-running-the-host)
 - [🌐 Exposing the PR Reviewer Host to GitHub](#-exposing-the-pr-reviewer-host-to-github)
-- [� Utility Commands](#-utility-commands)
+- [👁️ Observability with Opik](#-observability-with-opik)
+- [🛠 Utility Commands](#-utility-commands)
 
 # 📋 Prerequisites
 
@@ -69,9 +70,10 @@ Here, we focus on the **custom MCP Host**, an Agentic AI App that:
 This project requires access to the following cloud services.  
 Authentication is managed via environment variables stored in your `.env` file:
 
-| Service | Purpose | Cost | Environment Variable | Setup Guide | Used Starting |
-|---------|---------|------|---------------------|-------------|---------------|
-| [Gemini API](https://ai.google.dev/gemini-api/docs) | LLM for PR review summaries | Pay-per-use (with free tier) | `GEMINI_API_KEY` | [Quick Start Guide](https://ai.google.dev/gemini-api/docs/get-started) | From start |
+| Service | Purpose | Cost | Environment Variable | Setup Guide | 
+|---------|---------|------|---------------------|-------------|
+| [Gemini API](https://ai.google.dev/gemini-api/docs) | LLM for PR review summaries | Pay-per-use (with free tier) | `GEMINI_API_KEY` | [Quick Start Guide](https://ai.google.dev/gemini-api/docs/get-started) |
+| [Opik](https://opik.ai/) | Observability, analytics & tracing for LLM workflows | Free (with paid plans) | `OPIK_API_KEY` | [Opik Quick Start](https://docs.opik.ai/quickstart) | 
 
 
 # 🎯 Getting Started
@@ -92,6 +94,7 @@ Authentication is managed via environment variables stored in your `.env` file:
   GEMINI_API_KEY="<your_gemini_api_key>"
   SLACK_CHANNEL_ID="<your_slack_channel_id>"
   TOOL_REGISTRY_URL="<your_slack_channel_id>"
+  OPIK_API_KEY="<your_opik_api_key>"
   ```
   *The `SLACK_CHANNEL_ID` is the ID of the Slack channel your team uses for PR reviews (e.g., `C01234567`).*  
 
@@ -116,10 +119,7 @@ Authentication is managed via environment variables stored in your `.env` file:
 
 This project works as the **host and orchestrator**, so it relies on external **MCP servers** to provide the actual data and tools used in the PR review process.
 
-These MCP servers are managed in the **separate project** located at `apps/pr-reviewer-mcp-servers`.
-- You must start the **MCP Global Server** (from the other project) **before running this host** and provide its URL in **TOOL_REGISTRY_URL**.  
-- If those servers are not running, the host will still respond **but without any PR context**, resulting in incomplete or less useful review results.
-
+These MCP servers are managed in the **separate project** located at `apps/pr-reviewer-mcp-servers`. You must start the **MCP Global Server** (from the other project) **before running this host** and provide its URL in **TOOL_REGISTRY_URL**.  
 
 
 
@@ -127,22 +127,26 @@ These MCP servers are managed in the **separate project** located at `apps/pr-re
 
 ```bash
 apps/pr-reviewer-mcp-host/
-├── .venv/                      # Virtual environment (created after setup)
-├── src/                        # Application source code
-│   ├── api/                    # API layer
+├── src/
+│   ├── api/                        # API layer for external event handling
 │   │   ├── __init__.py
-│   │   └── webhook.py          # GitHub PR webhook endpoint
-│   ├── host/                   # MCP host core logic
+│   │   └── webhook.py              # Webhook endpoint for PR events
+│   ├── host/                       # MCP host connection management
 │   │   ├── __init__.py
-│   │   ├── connection_manager.py  # Manages connections to MCP servers
-│   │   └── host.py             # Host orchestration logic
-│   └── config.py               # Configuration handling
-├── .env                        # Environment variables (local, ignored in git)
-├── .env.example                # Example environment variables template
-├── .python-version             # Python version pin
-├── Makefile                    # Common commands for development 
-├── pyproject.toml              # Project dependencies & metadata
-└── README.md                   # Project documentation
+│   │   ├── connection_manager.py   # Handles MCP server connections
+│   │   └── host.py                 # Host runtime logic
+│   ├── utils/                      # Utility modules
+│   │   ├── __init__.py
+│   │   └── opik_utils.py           # Observability utilities for Opik
+│   ├── config.py                   # Configuration management
+│   ├── main.py                     # Application entry point
+│   └── test_gemini.py              # Experimental Gemini integration tests
+├── .env                            # Local environment variables
+├── .env.example                    # Example env vars template
+├── .python-version                 # Python version pinning
+├── Makefile                        # Common development commands
+├── pyproject.toml                  # Project dependencies & metadata
+└── README.md                       # Project documentation
 ```
 
 
@@ -210,7 +214,25 @@ When a pull request is opened (or another configured event occurs), GitHub sends
 See `src/api/webhook.py` for how this payload is processed.
 
 
-# 🛠 Utility Commands
+# 👁️ Observability with Opik
+
+This project uses [Opik](https://opik.ai/) for tracing and analytics of all LLM-powered workflows. 
+By default, traces and spans are grouped under the `pr_reviewer_host` project (set via `OPIK_PROJECT_ID` in your `.env`), but you can change this value as needed.
+
+
+Once your host is running and processing PR events, visit your [Opik dashboard](https://app.opik.ai/) and select your project (e.g., `pr_reviewer_host` if not overwritten).
+
+You will see traces for each webhook event, including:
+
+- The webhook trigger
+- Context/tool fetches from MCP servers
+- LLM (Gemini) calls
+- Slack notification delivery
+
+![Observability with Opik](/static/opik_host.png)
+
+
+## 🛠 Utility Commands
 
 Here are some handy `make` commands to simplify development:
 

@@ -51,7 +51,8 @@ All these tools and resources are **aggregated into the Tool Registry**, a centr
 - [⚡️ Running the Servers](#-running-the-servers)
 - [🧪 Testing the Servers](#-testing-the-servers)
 - [📝 Example: Using the MCP Tool Registry](#-example-using-the-mcp-tool-registry)
-- [🛠 Utility Commands](#-utility-commands)
+- [👁️ Observability with Opik](#-observability-with-opik)
+- [�🛠 Utility Commands](#-utility-commands)
 
 # 📋 Prerequisites
 
@@ -72,6 +73,7 @@ Some servers require access to external APIs. Authentication is managed via envi
 | GitHub API | PR data, comments, status | `GITHUB_ACCESS_TOKEN` |
 | Slack API | Messaging, channel info | `SLACK_BOT_TOKEN` |
 | Asana API | Task management | `ASANA_ACCESS_TOKEN` |
+| Opik | Observability, analytics & tracing | `OPIK_API_KEY` |
 
 Instructions and links for obtaining these API tokens are provided in the sections below, see the **Getting Started** steps for detailed tutorials and resources.
 
@@ -133,6 +135,7 @@ These commands will guide you through the process of authorizing your app and ob
   ASANA_PROJECT_GID=<your_project_id>
   SLACK_BOT_TOKEN=<your_slack_bot_token>
   GITHUB_ACCESS_TOKEN="<your_github_access_token>"
+  OPIK_API_KEY="<your_opik_api_key>"
   ```
 
 3. **Install project dependencies**
@@ -148,33 +151,36 @@ These commands will guide you through the process of authorizing your app and ob
 ```bash
 apps/pr-reviewer-mcp-servers/
 ├── src/
-│   ├── clients/                 # API clients for external services
-│   │   ├── __init__.py    
-│   │   ├── asana_client.py      # Asana API client
-│   │   └── slack_client.py      # Slack API client
-│   ├── utils/                   # Utility modules and OAuth handlers
-│   │   ├── __init__.py    
-│   │   ├── oauth_github.py      # GitHub OAuth flow
-│   │   └── oauth_slack.py       # Slack OAuth flow
-│   ├── agent_scope_server.py    # Agent Scope Prompt server
-│   ├── asana_server.py          # Asana MCP server
-│   ├── config.py                # Configuration handling
-│   ├── github_server.py         # GitHub MCP server
-│   ├── main.py                  # Application entry point
-│   ├── prompts.py               # Prompt templates
-│   ├── slack_server.py          # Slack MCP server
-│   └── tool_registry.py         # Tool registry server
-├── tests/                           # Test suites for servers
-│   ├── test_agent_scope_server.py   # Tests for Agent Scope Prompt server
-│   ├── test_asana_server.py         # Tests for Asana MCP server
-│   ├── test_github_server.py        # Tests for GitHub MCP server
-│   ├── test_slack_server.py         # Tests for Slack MCP server
-│   └── test_tool_registry.py        # Tests for Tool registry server
-├── .env                         # Environment variables (local, ignored in git)
-├── .env.example                 # Example environment variables template
-├── Makefile                     # Common commands for development
-├── pyproject.toml               # Project dependencies & metadata
-└── README.md                    # Project documentation
+│   ├── clients/                     # API clients for external services
+│   │   ├── __init__.py
+│   │   ├── asana_client.py          # Asana API client
+│   │   └── slack_client.py          # Slack API client
+│   ├── servers/                     # MCP servers for external integrations
+│   │   ├── __init__.py
+│   │   ├── agent_scope_server.py    # Agent Scope Prompt server
+│   │   ├── asana_server.py          # Asana MCP server
+│   │   ├── github_server.py         # GitHub MCP server
+│   │   ├── prompts.py               # Prompt templates
+│   │   ├── slack_server.py          # Slack MCP server
+│   │   └── tool_registry.py         # Tool registry server
+│   ├── utils/                       # Utility modules & helpers
+│   │   ├── __init__.py
+│   │   ├── oauth_github.py          # GitHub OAuth flow
+│   │   ├── oauth_slack.py           # Slack OAuth flow
+│   │   └── opik_utils.py            # Observability helpers for Opik
+│   ├── config.py                    # Configuration handling
+│   └── main.py                      # Application entry point
+├── tests/                               # Test suites for servers & utilities
+│   ├── test_agent_scope_server.py       # Tests for Agent Scope Prompt server
+│   ├── test_asana_server.py             # Tests for Asana MCP server
+│   ├── test_github_server.py            # Tests for GitHub MCP server
+│   ├── test_slack_server.py             # Tests for Slack MCP server
+│   └── test_tool_registry.py            # Tests for Tool registry server
+├── .env                             # Local environment variables
+├── .env.example                     # Example env vars template
+├── Makefile                         # Common development commands
+├── pyproject.toml                   # Project dependencies & metadata
+├── README.md                        # Project documentation
 ```
 
 
@@ -253,6 +259,25 @@ For example, you can use the MCP Tool Registry with any MCP-compliant host to ca
 result = await client.call_tool("get_pull_request", {"owner": "my-org", "repo": "my-repo", "pullNumber": 42})
 print(result)
 ```
+
+
+# 👁️ Observability with Opik
+
+This project uses [Opik](https://opik.ai/) for tracing and analytics of all MCP server workflows.
+By default, traces and spans are grouped under the `pr_reviewer_servers` project (set via `OPIK_PROJECT_ID` in your `.env`), but you can change this value as needed.
+Once your servers are running and processing requests, visit your [Opik dashboard](https://app.opik.ai/) and select your project (e.g., `pr_reviewer_servers` if not overwritten).
+
+You will see traces for each server event, including:
+
+- Tool calls from hosts
+- API requests to GitHub, Slack, Asana, etc.
+- Prompt fetches and responses
+
+![Observability with Opik](/static/opik_servers.png)
+
+ Additionally, the prompts served by the MCP Servers are versioned and tracked in the Prompts Library.
+
+![Prompt Versioning with Opik](/static/opik_prompts.png)
 
 # 🛠 Utility Commands
 

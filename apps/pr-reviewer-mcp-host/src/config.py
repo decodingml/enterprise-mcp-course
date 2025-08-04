@@ -28,7 +28,7 @@ class Settings(BaseSettings):
     OPIK_PROJECT: str = Field(default="pr_reviewer_host",
         description="Project name for Comet ML and Opik tracking.",)
 
-    @field_validator("GEMINI_API_KEY", "SLACK_CHANNEL_ID", "TOOL_REGISTRY_URL")
+    @field_validator("GEMINI_API_KEY", "SLACK_CHANNEL_ID", "TOOL_REGISTRY_URL", "OPIK_API_KEY")
     @classmethod
     def check_not_empty(cls, value: str, info) -> str:
         """
