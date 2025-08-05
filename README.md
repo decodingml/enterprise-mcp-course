@@ -9,7 +9,7 @@
 
 <p align="center">
   <a href="https://decodingml.substack.com/p/enterprise-mcp-series">
-    <img src="static/enterprise_mcp_architecture.png" alt="Enterprise MCP Architecture" width="600">
+    <img src="static/architecture.png" alt="Enterprise MCP Architecture" width="600">
   </a>
 </p>
 
