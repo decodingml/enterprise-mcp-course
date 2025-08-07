@@ -129,6 +129,14 @@ After registering, you will receive a **Client ID** and **Client Secret** for ea
   ```
 These commands will guide you through the process of authorizing your app and obtaining the required API tokens.
 
+> **Note:**  
+> It’s important to understand why we use a **GitHub App integration** instead of calling the **GitHub MCP remote server** or the **GitHub API** directly with a PAT (Personal Access Token).  
+>
+> A **GitHub App** is a registered integration that provides fine-grained permissions, webhook support, and secure authentication. It’s the recommended approach for production and enterprise environments.  
+>
+> Both the **GitHub MCP remote server** and the **GitHub API** (REST/GraphQL) are ways to access GitHub data. However, they rely on credentials—such as tokens—issued by a GitHub App to operate securely and within GitHub’s permission model.
+
+
 **e. Open `.env` and fill in the rest of required credentials:**
   ```dotenv
   ASANA_TOKEN=<your_asana_token>
