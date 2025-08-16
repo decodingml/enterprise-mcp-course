@@ -1,6 +1,6 @@
 
 <div align="center">
-  <h1>Enterprise MCP Series: Build a PR Reviewer for Automated Code Reviews</h1>
+  <h1>Designing Enterprise MCP systems</h1>
   <h3>Build, orchestrate, and scale intelligent workflows with the Model Context Protocol</h3>
   <p class="tagline">Open-source project by <a href="https://decodingml.substack.com">Decoding ML</a></p>
 </div>
@@ -62,7 +62,7 @@ By using the **Gemini free tier**, this course can be completed at **zero cost**
 
 | Lesson | Title | Focus                                                                                            |
 |--------|-------|--------------------------------------------------------------------------------------------------|
-| 1 | [**Designing AI Systems the MCP Way**](https://decodingml.substack.com/p/ec61036e-f294-4c57-986d-dad71bbd4840) | **Architecting the solution** and understanding the MCP mindset.                                 |
+| 1 | [**Why MCP Breaks Old Enterprise AI Architectures**](https://decodingml.substack.com/p/ec61036e-f294-4c57-986d-dad71bbd4840) | **Architecting the solution** and understanding the MCP mindset.                                 |
 | 2 | [**Automating Developer Workflows with MCP**](https://decodingml.substack.com/p/c7d97f8d-bfee-41ff-bed9-907f2213e6bb) | **Implementing the full PR Reviewer Assistant** workflow end-to-end.                             |
 | 3 | [**Agent Patterns and Workflow Architectures**](https://decodingml.substack.com/p/918f6d71-b824-430d-bc47-4b843a92b58d) | **Exploring other agent patterns and workflow architectures** for scalable PR review automation. |
 
