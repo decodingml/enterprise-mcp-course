@@ -1,6 +1,6 @@
 
 <div align="center">
-  <h1>Designing Enterprise MCP systems</h1>
+  <h1>Designing Enterprise MCP Systems</h1>
   <h3>Build, orchestrate, and scale intelligent workflows with the Model Context Protocol</h3>
   <p class="tagline">Open-source project by <a href="https://decodingml.substack.com">Decoding ML</a></p>
 </div>
