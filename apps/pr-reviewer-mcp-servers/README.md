@@ -96,7 +96,7 @@ Follow these steps:
 **a. Register your app in Slack & Github:**
 
 - **Slack:** [Create a Slack App & Get Credentials](https://api.slack.com/authentication/oauth-v2)
-- **GitHub:** [Register a GitHub OAuth App](https://docs.github.com/en/developers/apps/building-oauth-apps/creating-an-oauth-app)
+- **GitHub:** [Register an OAuth App in Github](https://docs.github.com/en/developers/apps/building-oauth-apps/creating-an-oauth-app)
 
 > **Token Tip:** When authorizing your GitHub app or Slack app, you can simply copy the code directly from the URL after the browser redirects you (as highlighted in the image above) and paste it into the CLI, as requested. This makes it easy to obtain the GitHub/Slack bot token for your MCP server without deploying a public callback endpoint during development.
 
