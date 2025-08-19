@@ -108,13 +108,6 @@ Before you can use the APIs, you must register your own app with each service to
 
 **A) Register your Slack App**
 
-You have two options:  
-- Register manually from the Slack Web UI  
-- Or use the provided OAuth registration script  
-
-
-
-**Option 1: Manual Setup (recommended for simplicity)**
 
 1. **Create the app**  
    Go to Slack → [Your Apps](https://api.slack.com/apps) and create a new app.  
@@ -142,29 +135,6 @@ You have two options:
    SLACK_BOT_TOKEN=<your_slack_bot_token>
 
 
-**Option 2: Script-Based Setup (OAuth flow via CLI)**
-
-1. **Create the app**  
-   Go to Slack → [Your Apps](https://api.slack.com/apps) and create a new app.
-
-2. **Copy credentials into `.env`**  
-   ```dotenv
-   SLACK_CLIENT_ID=<your_slack_client_id>
-   SLACK_CLIENT_SECRET=<your_slack_client_secret>
-   ```
-
-3. **Run the registration script**  
-    ```bash
-    make register-slack
-    ````
-
-Follow the CLI flow. At the end, you will receive your Bot Token.
-
-4. **Environment variables**  
-   Add your bot token to `.env`:  
-
-   ```dotenv
-   SLACK_BOT_TOKEN=<your_slack_bot_token>
 
 
 **B) Registering your app in Github**
@@ -243,7 +213,6 @@ apps/pr-reviewer-mcp-servers/
 │   ├── utils/                       # Utility modules & helpers
 │   │   ├── __init__.py
 │   │   ├── oauth_github.py          # GitHub OAuth flow
-│   │   ├── oauth_slack.py           # Slack OAuth flow
 │   │   └── opik_utils.py            # Observability helpers for Opik
 │   ├── config.py                    # Configuration handling
 │   └── main.py                      # Application entry point

@@ -36,9 +36,6 @@ run-github:
 test-github:
 	uv run python tests/test_github_server.py
 
-register-slack:
-	PYTHONPATH=src uv run python src/utils/oauth_slack.py
-
 register-github:
 	PYTHONPATH=src uv run python src/utils/oauth_github.py
 
