@@ -168,6 +168,14 @@ Fill it in the .env file:
 GITHUB_ACCESS_TOKEN=<your_github_access_token>
 ```
 
+> **Note:**  
+> In this setup, we use an **OAuth App integration**. An OAuth App authenticates on behalf of a user, inheriting that user’s permissions. This makes it simple to register and test locally, since you can just authorize with your own account.  
+>
+> However, you could also use a **GitHub App integration** instead. GitHub Apps provide fine-grained permissions, webhook support, and secure server-to-server authentication. They are generally the recommended approach for production and enterprise environments because they are not tied to a single user and can operate with more limited, scoped permissions.  
+>
+> Both the **GitHub MCP remote server** and the **GitHub API** (REST/GraphQL) rely on credentials issued by one of these integrations (OAuth App or GitHub App) to operate securely within GitHub’s permission model.
+
+
 **C) [Get your Asana Token](https://developers.asana.com/docs/personal-access-token)**
 > **Note:** In this example we’re using a **PAT** to show both registration methods.  
 > The recommended approach, however, is OAuth: [Asana with OAuth](https://developers.asana.com/docs/oauth).
