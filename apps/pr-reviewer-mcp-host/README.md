@@ -30,7 +30,7 @@ The series covers best practices for building scalable, multi-tool automation sy
 The project is structured into **two main parts**:
 
 1. **MCP Host** – The central orchestrator responsible for connecting to multiple MCP servers and coordinating their outputs.  
-2. **MCP Servers** – Independent components that provide contextual data (e.g., GitHub diffs from the repository, Asana task details, and entries from a tool registry).
+2. **MCP Servers** – Independent components that provide contextual data (e.g., GitHub diffs from the repository, Asana task details and others).
 
 # The PR Reviewer MCP Host
 
@@ -70,10 +70,10 @@ Here, we focus on the **custom MCP Host**, an Agentic AI App that:
 This project requires access to the following cloud services.  
 Authentication is managed via environment variables stored in your `.env` file:
 
-| Service | Purpose | Cost | Environment Variable | Setup Guide | 
-|---------|---------|------|---------------------|-------------|
+| Service                                             | Purpose | Cost | Environment Variable | Setup Guide | 
+|-----------------------------------------------------|---------|------|---------------------|-------------|
 | [Gemini API](https://ai.google.dev/gemini-api/docs) | LLM for PR review summaries | Pay-per-use (with free tier) | `GEMINI_API_KEY` | [Quick Start Guide](https://ai.google.dev/gemini-api/docs/get-started) |
-| [Opik](https://opik.ai/) | Observability, analytics & tracing for LLM workflows | Free (with paid plans) | `OPIK_API_KEY` | [Opik Quick Start](https://docs.opik.ai/quickstart) | 
+| [Opik](https://www.comet.com/site/products/opik/)   | Observability, analytics & tracing for LLM workflows | Free (with paid plans) | `OPIK_API_KEY` | [Opik Quick Start](https://www.comet.com/docs/opik/quickstart) | 
 
 
 # 🎯 Getting Started
@@ -96,8 +96,7 @@ Authentication is managed via environment variables stored in your `.env` file:
   TOOL_REGISTRY_URL="<your_slack_channel_id>"
   OPIK_API_KEY="<your_opik_api_key>"
   ```
-  *The `SLACK_CHANNEL_ID` is the ID of the Slack channel your team uses for PR reviews (e.g., `C01234567`).*  
-
+  *The `SLACK_CHANNEL_ID` is the ID of the Slack channel your team uses for PR reviews (e.g. `C01234567`). Also, make sure you have the MCP Global Server already started. The `TOOL_REGISTRY_URL` is the URL on which the MCP Global Server is started on (e.g. http://localhost:8000/mcp )*.
 
 3. **Install project dependencies**  
   ```bash
@@ -191,6 +190,8 @@ Go to your GitHub repository settings and add this as a webhook endpoint.
   ![GitHub webhook setup](/static/webhook.png)
 
 Configure the webhook to trigger on **Pull Request** events (you can filter for `opened` actions in your code).
+
+Now everything is ready. Just open a new PR on the repo you configured the webhook on and see the PR Reviewer in action!
 
 ### How It Works
 

@@ -79,80 +79,149 @@ Instructions and links for obtaining these API tokens are provided in the sectio
 
 # 🎯 Getting Started
 
-1. **Clone the repo**
+### 1. **Clone the repo**
    ```bash
    git clone https://github.com/decodingml/enterprise-mcp-series.git
    cd enterprise-mcp-series/apps/pr-reviewer-mcp-servers
    ```
-
-2. **Set up your environment variables**  
-
-Before you can use the APIs, you must register your own app with each service to obtain the required credentials (Client ID, Client Secret and API Tokens). 
-
-> **Note:** OAuth 2.0 is typically designed for apps where each user authenticates individually. In this enterprise setup, you only need to register the MCP server as a single client—registration is a one-time step for your organization. For the application callback URL, you do not need to provide a real endpoint when running locally (unless you want to expose a secure endpoint).
-
-Follow these steps:
-
-**a. Register your app in Slack & Github:**
-
-- **Slack:** [Create a Slack App & Get Credentials](https://api.slack.com/authentication/oauth-v2)
-- **GitHub:** [Register an OAuth App in Github](https://docs.github.com/en/developers/apps/building-oauth-apps/creating-an-oauth-app)
-
-> **Token Tip:** When authorizing your GitHub app or Slack app, you can simply copy the code directly from the URL after the browser redirects you (as highlighted in the image above) and paste it into the CLI, as requested. This makes it easy to obtain the GitHub/Slack bot token for your MCP server without deploying a public callback endpoint during development.
-
-  ![GitHub code example](/static/github-code.png)
-
-After registering, you will receive a **Client ID** and **Client Secret** for each service.
-
-**b. Copy the example environment file and edit it:**
-  ```bash
-  cp .env.example .env
-  ```  
-
-**c. Open `.env` and fill in the required credentials:**
-  ```dotenv
-  SLACK_CLIENT_ID=<your_slack_client_id>
-  SLACK_CLIENT_SECRET=<your_slack_client_secret>
-  GITHUB_CLIENT_ID=<your_github_client_id>
-  GITHUB_CLIENT_SECRET=<your_github_client_secret>
-  ```
-
-**d. Run the registration commands:**
-
-- For Slack:
-  ```bash
-  make register-slack
-  ```
-- For GitHub:
-  ```bash
-  make register-github
-  ```
-These commands will guide you through the process of authorizing your app and obtaining the required API tokens.
-
-> **Note:**  
-> It’s important to understand why we use a **GitHub App integration** instead of calling the **GitHub MCP remote server** or the **GitHub API** directly with a PAT (Personal Access Token).  
->
-> A **GitHub App** is a registered integration that provides fine-grained permissions, webhook support, and secure authentication. It’s the recommended approach for production and enterprise environments.  
->
-> Both the **GitHub MCP remote server** and the **GitHub API** (REST/GraphQL) are ways to access GitHub data. However, they rely on credentials—such as tokens—issued by a GitHub App to operate securely and within GitHub’s permission model.
-
-
-**e. Open `.env` and fill in the rest of required credentials:**
-  ```dotenv
-  ASANA_TOKEN=<your_asana_token>
-  ASANA_PROJECT_GID=<your_project_id>
-  SLACK_BOT_TOKEN=<your_slack_bot_token>
-  GITHUB_ACCESS_TOKEN="<your_github_access_token>"
-  OPIK_API_KEY="<your_opik_api_key>"
-  ```
-
-3. **Install project dependencies**
+### 2. **Install project dependencies**
 ```bash
    deactivate
    uv venv .venv
    . .venv/bin/activate
    make install
    ```
+
+### 3. **Set up your environment variables**
+
+Copy the example environment file:
+  ```bash
+  cp .env.example .env
+  ```  
+
+
+Before you can use the APIs, you must register your own app with each service to obtain the required credentials (Client ID, Client Secret and API Tokens).
+
+> **Note:** OAuth 2.0 is typically designed for apps where each user authenticates individually. In this enterprise setup, you only need to register the MCP server as a single client—registration is a one-time step for your organization. For the application callback URL, you do not need a real endpoint when running locally (unless you want to expose a secure endpoint).
+
+
+
+**A) Register your Slack App**
+
+You have two options:  
+- Register manually from the Slack Web UI  
+- Or use the provided OAuth registration script  
+
+
+
+**Option 1: Manual Setup (recommended for simplicity)**
+
+1. **Create the app**  
+   Go to Slack → [Your Apps](https://api.slack.com/apps) and create a new app.  
+
+   ![Register a Slack app](/static/register_slack.png)
+
+2. **Configure OAuth & permissions**  
+   Set your redirect URL and add bot scopes in the **OAuth & Permissions** tab.  
+
+   ![Setting the Redirect URL](/static/slack_redirect.png)  
+
+   Add the following bot scopes:  
+
+   ![Bot scopes for Slack](/static/slack_bot_scopes.png)
+
+3. **Install to workspace**  
+   Install the app to your workspace to obtain your **Bot Token**.  
+
+   ![Installing your App](/static/slack_install.png)
+
+4. **Environment variables**  
+   Add your bot token to `.env`:  
+
+   ```dotenv
+   SLACK_BOT_TOKEN=<your_slack_bot_token>
+
+
+**Option 2: Script-Based Setup (OAuth flow via CLI)**
+
+1. **Create the app**  
+   Go to Slack → [Your Apps](https://api.slack.com/apps) and create a new app.
+
+2. **Copy credentials into `.env`**  
+   ```dotenv
+   SLACK_CLIENT_ID=<your_slack_client_id>
+   SLACK_CLIENT_SECRET=<your_slack_client_secret>
+   ```
+
+3. **Run the registration script**  
+    ```bash
+    make register-slack
+    ````
+
+Follow the CLI flow. At the end, you will receive your Bot Token.
+
+4. **Environment variables**  
+   Add your bot token to `.env`:  
+
+   ```dotenv
+   SLACK_BOT_TOKEN=<your_slack_bot_token>
+
+
+**B) Registering your app in Github**
+
+1.  [Register your OAuth App in GitHub](https://docs.github.com/en/developers/apps/building-oauth-apps/creating-an-oauth-app)
+![Registering an OAuth App](/static/register_github.png)
+
+After registering, you will receive a **Client ID** and **Client Secret**.
+
+2. Open `.env` and fill in the required credentials 
+```dotenv
+GITHUB_CLIENT_ID=<your_github_client_id>
+GITHUB_CLIENT_SECRET=<your_github_client_secret>
+```
+
+3. Run the registration command:
+
+```
+make register-github
+```
+Please follow the indications in the CLI.
+
+> **Token Tip:** When authorizing your GitHub app, you can simply copy the code directly from the URL after the browser redirects you (as highlighted in the image below) and paste it into the CLI, as requested. This makes it easy to obtain the GitHub access token for your MCP server without deploying a public callback endpoint during development.  
+
+![GitHub code example](/static/github-code.png)
+
+After copying this code in your CLI you will receive your GITHUB_ACCESS_TOKEN. 
+
+Fill it in the .env file:
+```dotenv
+GITHUB_ACCESS_TOKEN=<your_github_access_token>
+```
+
+**C) [Get your Asana Token](https://developers.asana.com/docs/personal-access-token)**
+> **Note:** In this example we’re using a **PAT** to show both registration methods.  
+> The recommended approach, however, is OAuth: [Asana with OAuth](https://developers.asana.com/docs/oauth).
+
+Fill it in the .env file:
+```dotenv
+ASANA_TOKEN=<your_asana_token>
+```
+
+You can get the ASANA_PROJECT_GID from the URL of your Asana board:
+
+![Asana Board](/static/asana_board.png)
+
+
+**D) Obtain your Opik Token**
+
+[Comet](https://www.comet.com/site/) provides a hosted version of the Opik platform.
+
+Simply [create an account](https://www.comet.com/opik/) and grab your API Key and fill it in the .env file:
+```dotenv
+OPIK_API_KEY="<your_opik_api_key>"
+```
+
+
 
 # 📁 Project Structure
 
@@ -223,7 +292,7 @@ Each server can also be started on its own. For example, to run the Slack server
    ```
 2. Then run:
    ```bash
-   make run-slack-server
+   make run-slack
    ```
 
 **Warning:** When switching back to using the Tool Registry, comment out the `slack_mcp.run(...)` line again. This applies to all servers if you want to run them independently.
@@ -247,7 +316,7 @@ To test a specific server independently (e.g., Slack), you must first run that s
 1. Uncomment the `.run(...)` line in the server file (e.g., `slack_mcp.run(...)` in `src/slack_server.py`).
 2. Start the server:
    ```bash
-   make run-slack-server
+   make run-slack
    ```
 3. In a separate terminal, run the test:
    ```bash
@@ -271,7 +340,7 @@ print(result)
 
 # 👁️ Observability with Opik
 
-This project uses [Opik](https://opik.ai/) for tracing and analytics of all MCP server workflows.
+This project uses [Opik](https://www.comet.com/site/products/opik/) for tracing and analytics of all MCP server workflows.
 By default, traces and spans are grouped under the `pr_reviewer_servers` project (set via `OPIK_PROJECT_ID` in your `.env`), but you can change this value as needed.
 Once your servers are running and processing requests, visit your [Opik dashboard](https://app.opik.ai/) and select your project (e.g., `pr_reviewer_servers` if not overwritten).
 

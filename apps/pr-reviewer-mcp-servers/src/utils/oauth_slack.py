@@ -12,7 +12,7 @@ REDIRECT_URI = "https://localhost:8000/callback"
 def generate_authorization_url():
     params = {
         "client_id": settings.SLACK_CLIENT_ID,
-        "scope": "chat:write,channels:read,users:read",  # adjust scopes for your app
+        "scope": "chat:write,channels:read,users:read,app_mentions:read,channels:history,channels:join,chat:write.customize,chat:write.public,assistant:write,groups:history,im:history,mpim:history",  # adjust scopes for your app
         "redirect_uri": REDIRECT_URI,
     }
     return f"{SLACK_AUTHORIZE_URL}?{urlencode(params)}"
