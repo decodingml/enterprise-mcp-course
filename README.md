@@ -15,7 +15,7 @@
 
 ## 📖 About This Series
 
-The **Enterprise MCP Series** is an **open-source initiative** designed to help you **design, build, and deploy** modular, **production-grade AI automation systems** using the **Model Context Protocol (MCP)**.
+The **Enterprise MCP Series** is an **open-source initiative** designed to help you **build** modular, **production-grade AI automation systems** using the **Model Context Protocol (MCP)**.
 
 In this series, we focus on building a **Pull Request Reviewer** for an enterprise project, showcasing how to integrate multiple tools and orchestrate them into a scalable, production-ready MCP architecture.
 
@@ -23,6 +23,7 @@ In this series, we focus on building a **Pull Request Reviewer** for an enterpri
 
 Unlike simple tutorials, this series tackles **real-world, enterprise use cases**—like a **Pull Request Reviewer Assistant** that analyzes GitHub PRs, pulls context from Github and Asana, and posts actionable insights to your team on Slack.
 
+It shows how to:
 - **Automate AI workflows** within your internal systems  
 - **Build scalable infrastructure** – design workflows that support multiple automation pipelines, ready to grow with your organization  
 - **Evaluate MCP for enterprise migration** – understand if migrating your codebase to an MCP-based architecture is worth it  
@@ -32,7 +33,7 @@ Unlike simple tutorials, this series tackles **real-world, enterprise use cases*
 
 You will learn how to:
 
-- **Build custom MCP Servers** for Slack, Asana, and GitHub to expose enterprise tools and resources  
+- **Build custom MCP Servers** for Slack and Asana to expose enterprise tools and resources  
 - **Connect to external MCP servers** (e.g., GitHub Remote MCP) and integrate them seamlessly 
 - **Centralize tools and prompts** into an internal **Tool Registry** (a global MCP server)  
 - **Create a custom MCP Host** to orchestrate workflows (no reliance on Claude Desktop)  
@@ -63,8 +64,8 @@ By using the **Gemini free tier**, this course can be completed at **zero cost**
 | Lesson | Title | Focus                                                                                            |
 |--------|-------|--------------------------------------------------------------------------------------------------|
 | 1 | [**Why MCP Breaks Old Enterprise AI Architectures**](https://decodingml.substack.com/p/ec61036e-f294-4c57-986d-dad71bbd4840) | **Architecting the solution** and understanding the MCP mindset.                                 |
-| 2 | [**Automating Developer Workflows with MCP**](https://decodingml.substack.com/p/c7d97f8d-bfee-41ff-bed9-907f2213e6bb) | **Implementing the full PR Reviewer Assistant** workflow end-to-end.                             |
-| 3 | [**Agent Patterns and Workflow Architectures**](https://decodingml.substack.com/p/918f6d71-b824-430d-bc47-4b843a92b58d) | **Exploring other agent patterns and workflow architectures** for scalable PR review automation. |
+| 2 | [**Automating Developer Workflows with MCP**]() | **Implementing the full PR Reviewer Assistant** workflow end-to-end.                             |
+| 3 | [**Agent Patterns and Workflow Architectures**]() | **Exploring other agent patterns and workflow architectures** for scalable PR review automation. |
 
 
 ## 🏗️ Repository Structure
